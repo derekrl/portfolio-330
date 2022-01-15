@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Week 2 Team Meeting</title>
+    <meta
+      name="description"
+      content="Team meeting assignment - Week 2"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header><h1>Week 2 Team Meeting</h1></header>
+    <main>
+        <label for="num1">Number 1</label>
+        <input type="number" name="num1" id="num1"><br>
+        <label for="num2">Number 2</label>
+        <input type="number" name="num2" id="num2"><br>
+        <div id="out"></div>
+        <button onclick="copyInput()">Big sum</button><br>
+        <button onclick="add()">+</button>
+        <button onclick="multiply()">×</button>
+    </main>
+    <footer></footer>
+    <script>
+        function copyInput() {
+            let input = document.getElementById('num1').value;
+            let output = bigSum(input);
+            document.getElementById('out').innerHTML = output;
+        }
+        function bigSum(n) {
+            n = parseFloat(n);
+            let num = 0;
+            for(i=n; i>0; i--) {
+                num += i;
+            }
+            return num;
+        }
+        
+        add = () => {
+            let num1 = parseFloat(document.getElementById('num1').value);
+            let num2 = parseFloat(document.getElementById('num2').value);
+
+            document.getElementById("out").innerHTML = num1 + num2;
+        }
+
+        let multiply = function() {
+            let num1 = parseFloat(document.getElementById('num1').value);
+            let num2 = parseFloat(document.getElementById('num2').value);
+
+            document.getElementById("out").innerHTML = num1 * num2;
+        }
+    </script>
+  </body>
+</html>

@@ -29,3 +29,7 @@ main {
 ol, ul {
     font-size: 125%;
 }
+
+li {
+    margin-bottom: .5em;
+}

@@ -2,6 +2,10 @@ const links = [
     {
         label: "Week 1 - Local Storage",
         url: "week01/index.html"
+    },
+    {
+        label: "Week 2 - Basic JS | Arrays,Logic,Loops | Functions",
+        url: "week02/index.html"
     }
 ]
 
