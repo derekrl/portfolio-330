@@ -6,6 +6,10 @@ const links = [
     {
         label: "Week 2 - Basic JS | Arrays,Logic,Loops | Functions",
         url: "week02/index.html"
+    },
+    {
+        label: "Week 3 - Objects | DOM | Events",
+        url: "week03/index.html"
     }
 ]
 
