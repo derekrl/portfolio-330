@@ -1,0 +1,50 @@
+section {
+    margin: 1em;
+}
+
+#grid-container {
+    width: 300px;
+    height: 300px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#grid-container .cell {
+    height: 100px;
+    width: 100px;
+}
+
+#grid-container .cell.x {
+    background-image: url(images/X.png);
+}
+
+#grid-container .cell.o {
+    background-image: url(images/O.png);
+}
+
+#grid-container .cell {
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+#grid-container .cell:nth-child(3),
+#grid-container .cell:nth-child(6),
+#grid-container .cell:nth-child(9) {
+    border-right: none;
+}
+
+#grid-container .cell:nth-child(7),
+#grid-container .cell:nth-child(8),
+#grid-container .cell:nth-child(9) {
+    border-bottom: none;
+}
+
+#output {
+    font-size: 2em;
+}
+
+input, button {
+    margin: .5em 0;
+    min-width: 20em;
+    padding: .5em;
+}
