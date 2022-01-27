@@ -28,7 +28,7 @@ function updateCell(cell) {
             turns++;
         }
     }
-    
+
     if (turns >= 9) {
         document.getElementById('output').innerText = "Tie Game!";
     }
