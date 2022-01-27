@@ -17,13 +17,13 @@ function resetGame() {
 function updateCell(cell) {
     if (player === "X") {
         if (!cell.classList.contains('o') && !cell.classList.contains('x')) {
-            cell.classList.toggle('x');
+            cell.classList.add('x');
             player = "O";
             turns++;
         }
     } else if (player === "O") {
         if (!cell.classList.contains('o') && !cell.classList.contains('x')) {
-            cell.classList.toggle('o');
+            cell.classList.add('o');
             player = "X";
             turns++;
         }
