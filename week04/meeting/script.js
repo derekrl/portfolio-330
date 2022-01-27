@@ -7,7 +7,7 @@ var turns = 0;
 
 function resetGame() {
     for (let i = 0; i < 9; i++) {
-        gridContainer.children[i].setAttribute('class', 'cell');
+        gridContainer.children[i].className = 'cell';
     }
     player = "X"
     turns = 0;
@@ -28,8 +28,8 @@ function updateCell(cell) {
             turns++;
         }
     }
+    
     if (turns >= 9) {
         document.getElementById('output').innerText = "Tie Game!";
     }
-
 }
