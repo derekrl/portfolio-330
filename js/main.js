@@ -10,11 +10,12 @@ const links = [
     {
         label: "Week 3 - Objects | DOM | Events",
         url: "week03/index.html"
+    },
+    {
+        label: "Week 4 - Forms | OOP | Modular JS",
+        url: "week04/index.html"
     }
 ]
-
-// todo: nest within array so there can be more than one page per week
-// Week 2: Link 1 | Link 2
 
 string = "";
 
