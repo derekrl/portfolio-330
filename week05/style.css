@@ -1,0 +1,59 @@
+body {
+    margin: 0;
+    font-family: sans-serif;
+}
+
+header, footer {
+    background-color: hsl(210, 50%, 30%);
+    color: white;
+    padding: .5em 0;
+    text-align: center;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+footer a {
+    color: hsl(30, 25%, 75%);
+}
+
+main {
+    max-width: 60em;
+    margin: 2em auto;
+    padding: 0 1em;
+    text-align: center;
+}
+
+section {
+    margin: 1em 0;
+}
+
+ol, ul {
+    text-align: left;
+    font-size: 125%;
+}
+
+li {
+    margin-bottom: .5em;
+}
+
+input, button {
+    margin: .5em 0;
+    min-width: 20em;
+    padding: .5em;
+}
+
+textarea {
+    width: 60em;
+    height: 20em;
+    box-shadow: 2px 2px 0 hsl(40, 50%, 50%);
+}
+
+section#story-display {
+    padding: 1em;
+    background-color:hsl(210, 25%, 90%);
+    box-shadow: 2px 2px 0 hsl(210, 50%, 50%);
+}

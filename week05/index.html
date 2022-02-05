@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Week 5</title>
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Week 5: Testing and Debugging</h1>
+    </header>
+    <main>
+        <ul>
+            <li>amIOldEnough(n)</li>
+            <li>squareRoot(n)</li>
+            <li><a href="jest/numberCruncher.test.js">numberCruncher.test.js</a></li>
+            <li><a href="jest/squareRoot.test.js">squareRoot.test.js</a></li>
+            <li>Apparently some jest expects need to be in arrow functions? First fails, second succeeds
+                <pre>expect(factorsOf('twelve')).toThrow();</pre>
+                <pre>expect(() => factorsOf('twelve').toThrow());</pre>
+            </li>
+            <li>Jest output: is there a way to make it summarize its results more succinctly? It very quickly floods out
+                any reasonably-sized terminal window</li>
+            <li><a href="meeting/index.html">Group meeting implementation</a> - it was 90% understanding what we
+                were being asked to do and 10% doing it</li>
+            <li>I still don't see any valid reasoning for us to be using specifically touch events when that makes it
+                unusable on desktops and most laptops. I know mobile-first is a thing but that's -first not -only</li>
+        </ul>
+    </main>
+</body>
+
+</html>

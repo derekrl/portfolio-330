@@ -14,6 +14,10 @@ const links = [
     {
         label: "Week 4 - Forms | OOP | Modular JS",
         url: "week04/index.html"
+    },
+    {
+        label: 'Week 5 - Testing and Debugging',
+        url: 'week05/index.html'
     }
 ]
 
