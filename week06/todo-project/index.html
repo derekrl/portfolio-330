@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo Project - WDD 330</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="main.js" type="module"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Todos</h1>
+    </header>
+    <main>
+        <ul id="tasks-cont" data-filter="All">
+            <li class="task-row incomplete top-row">
+                <input class="task-checkbox" type="checkbox">
+                <p>If you can read this, enable Javascript</p>
+                <span class="task-remove">&#x2716;</span>
+            </li>
+            <li class="task-row complete">
+                <input class="task-checkbox" type="checkbox" checked>
+                <p>I'll wait</p>
+                <span class="task-remove">&#x2716;</span>
+            </li>
+        </ul>
+        <section id="tasks-footer">
+            <p id="tasks-left"><strong>N</strong> tasks left</p>
+            <p id="filter-all" class="filter-button">All</p>
+            <p id="filter-active" class="filter-button">Active</p>
+            <p id="filter-complete" class="filter-button">Completed</p>
+        </section>
+    </main>
+    <footer>
+        <!-- stop enter keypresses in input from refreshing entire page -->
+        <form onSubmit="return false;">
+            <input type="text" id="task-input" name="task-input" placeholder="Add new task">
+            <button type="button" class="button" id="task-submit" name="task-input">
+                <svg viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+                    <path fill=currentColor d="m 6,2 h 3 v 4 h 4 V 9 H 9 v 4 H 6 V 9 H 2 V 6 h 4 z" />
+                </svg>
+            </button>
+        </form>
+    </footer>
+</body>
+
+</html>
