@@ -25,11 +25,11 @@ const links = [
     }
 ]
 
-string = "";
+let string = '';
 
 function listAppend(item) {
-    string = "<li><a href=" + item.url + ">" + item.label + "</a>";
-    document.getElementById("list").innerHTML += string;
+    string = `<li><a href=${item.url}>${item.label}</a>`;
+    document.getElementById('list').innerHTML += string;
 }
 
 links.forEach(listAppend);
