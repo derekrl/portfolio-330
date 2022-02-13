@@ -1,27 +1,27 @@
 const links = [
     {
         label: "Week 1 - Local Storage",
-        url: "week01/index.html"
+        url: "week01/"
     },
     {
         label: "Week 2 - Basic JS | Arrays,Logic,Loops | Functions",
-        url: "week02/index.html"
+        url: "week02/"
     },
     {
         label: "Week 3 - Objects | DOM | Events",
-        url: "week03/index.html"
+        url: "week03/"
     },
     {
         label: "Week 4 - Forms | OOP | Modular JS",
-        url: "week04/index.html"
+        url: "week04/"
     },
     {
         label: 'Week 5 - Testing and Debugging',
-        url: 'week05/index.html'
+        url: 'week05/'
     },
     {
         label: 'Week 6 - Todo Project',
-        url: 'week06/todo-project/index.html'
+        url: 'week06/todo-project/'
     }
 ]
 
