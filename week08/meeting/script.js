@@ -175,4 +175,3 @@ function listDetails(ship) {
     pagesDiv.style.display = 'none';
     buttonsPN.style.display = 'none';
 }
-
