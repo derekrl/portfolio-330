@@ -26,6 +26,10 @@ const links = [
     {
         label: 'Week 7 - Functional Programming | AJAX',
         url: 'week07/'
+    },
+    {
+        label: 'Week 8 - Transforms and Transitions | Canvas, SVG, and Drag and Drop',
+        url: 'week08/'
     }
 ]
 

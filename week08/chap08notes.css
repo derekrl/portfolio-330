@@ -1,0 +1,154 @@
+/****
+    TRANSFORMS
+****/
+
+#transforms {
+    transform: translate(45px, -45px);
+    transform: translateX(45px);
+    transform: translateY(-30px);
+    transform: scale(1.5, 0.25);
+    /* scaleX, scaleY */
+    transform: rotate(10deg);
+    transform: skew(15deg, 4deg);
+
+    /* default, center */
+    transform-origin: 50% 50%;
+    transform-origin: center center;
+}
+
+/****
+    TRANSITIONS
+****/
+
+/*
+Transforms can be chained together
+Order matters
+
+Transforms don't work on inline elements
+Fix with inline-block et al
+*/
+
+#transitions {
+    transition-property: background-color color;
+    transition-property: transform;
+    transition-property: all;
+    transition-duration: 1s;
+    transition-timing-function: ease-in-out;
+    transition-timing-function: cubic-bezier(1, 0, 0, 1);
+    transition-timing-function: steps(5, start);
+    transition-delay: 0s;
+    transition-delay: 50ms;
+    /* transition: property duration timing-function delay */
+    transition: all 0.2s ease-out 50ms;
+}
+
+/****
+    ANIMATIONS
+****/
+
+@-webkit-keyframes myAnimation {
+    /* put animation keyframes here */
+    /* caniuse says this prefix not necessary unless on 5+ year old browser, need to test */
+    /* even ie10 is fine */
+}
+@keyframes myAnimation {
+    /* put animation keyframes here */
+}
+
+@keyframes moveRight {
+    from {
+        transform: translateX(-50%);
+    }
+    to {
+        transform: translateX(50%);
+    }
+}
+
+@keyframes appearDisappear {
+    0%,
+    100% {
+        opacity: 0;
+    }
+    20%,
+    80% {
+        opacity: 1;
+    }
+}
+
+@keyframes bgMove {
+    100% {
+        background-position: 120% 0;
+    }
+}
+
+#animated-object {
+    animation-name: appearDisappear;
+    animation-duration: 300ms;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    /* normal, reverse, alternate, alternate-reverse */
+    /* alternate goes back and forth */
+    animation-delay: 50ms;
+    animation-fill-mode: none;
+    animation-play-state: running;
+    /* running, paused */
+}
+
+.verbose {
+    animation-name: appearDisappear;
+    animation-duration: 300ms;
+    animation-timing-function: ease-in;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+    animation-delay: 5s;
+    animation-fill-mode: backwards;
+    animation-play-state: running;
+}
+.concise {
+    animation: 300ms ease-in alternate 5s backwards appearDisappear;
+}
+
+/*
+fill-mode: what keyframe styles to apply (first, last) when animation isn't running
+none, forwards (last when done), backwards (first) (go back after), both
+initial, inherit
+*/
+
+/* multiple animations one element */
+.target {
+    animation: animationOne 300ms ease-in backwards,
+        animationTwo 600ms ease-out 1s forwards;
+}
+
+@keyframes bike {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: -360px 0;
+    }
+}
+@keyframes move {
+    0% {
+        transform: translateX(-100px);
+    }
+    100% {
+        transform: translateX(100px);
+    }
+}
+
+#bike:after {
+    content: "";
+    width: 90px;
+    height: 92px;
+    background-image: url(img/bike.png);
+    display: block;
+    margin: auto;
+    animation: 0.4s steps(4, end) infinite 50ms bike,
+        8s linear infinite 50ms move;
+    animation-play-state: paused;
+}
+#bike:hover:after {
+    animation-play-state: running;
+}

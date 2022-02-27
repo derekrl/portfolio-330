@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="chap08notes.css" />
+    <link rel="stylesheet" href="canvas.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Week 8</title>
+    <script src="canvas.js" defer></script>
+    <script src="drag-drop.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <h1>Week 8: Transforms and Transitions | Canvas, SVG, and Drag and Drop</h1>
+    </header>
+    <main>
+        <ul>
+            <li>Nice of them to drop us halfway into a book that assumes we have seven chapters' worth of foundation
+                built already</li>
+            <li>Chapter 8 notes in <a href="chap08notes.css">chap08notes.css</a></li>
+            <li>Book continues to be a pain with the code examples it gives on the drag-and-drop. Where was
+                originalEvent supposed to come from, when the one single time it's mentioned in the entire book is that
+                one sample? Why does it randomly use item instead of mouseID?</li>
+        </ul>
+
+        <section id="canvas">
+            <h2>Canvas Demos</h2>
+            <h3>Demo 1: Drawing a rectangle</h3>
+            <canvas id="demo1" class="myCanvas" width="200" height="200">
+                Sorry! Your browser doesn't support Canvas.
+            </canvas>
+            <h3>Demo 2: Filling the canvas with a pattern</h3>
+            <canvas id="demo2" class="myCanvas" width="200" height="200">
+                Sorry! Your browser doesn't support Canvas.
+            </canvas>
+
+            <h3>Demo 3: Creating a gradient on the canvas</h3>
+            <canvas id="demo3" class="myCanvas" width="200" height="200">
+                Sorry! Your browser doesn't support Canvas.
+            </canvas>
+
+            <h3>Demo 4: Drawing a circle</h3>
+            <canvas id="demo4" class="myCanvas" width="200" height="200">
+                Sorry! Your browser doesn't support Canvas.
+            </canvas>
+
+            <h3>Demo 5: Saving canvas drawings</h3>
+            <canvas id="demo5" class="myCanvas" width="200" height="200">
+                Sorry! Your browser doesn't support Canvas.
+            </canvas>
+
+            <button name="saveButton" id="saveButton">Save Drawing</button>
+
+            <h3>Demo 6: Drawing an image to the canvas</h3>
+            <canvas id="demo6" class="myCanvas" width="200" height="200">
+                Sorry! Your browser doesn't support Canvas.
+            </canvas>
+
+            <img src="img/html5-logo.png" id="myImageElem">
+
+            <h3>Demo 7: Converting an image from color to black and white</h3>
+            <canvas id="demo7" class="myCanvas" width="200" height="200">
+                Sorry! Your browser doesn't support Canvas.
+            </canvas>
+
+            <img src="img/html5-logo.png" id="secondImage">
+
+        </section>
+
+        <section id="svg">
+            <h2>SVG Demos</h2>
+            <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+                <circle cx="50" cy="50" r="25" fill="red" />
+            </svg>
+
+            <br/>
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+                <desc>Drawing a rectangle</desc>
+                <rect x="10" y="10" width="100" height="100" fill="blue" stroke="red" stroke-width="3" />
+            </svg>
+        </section>
+
+        <article id="ac3">
+            <h2>Drag and Drop Demo</h2>
+            <h3 id="catHeading">I am indeed a cat</h3>
+            <img src="img/cat.png" id="cat">
+            <div class="content">
+                <p id="mouseContainer" class="mc">
+                    <img src="img/computer-mouse-pic.svg" width="30" alt="mouse treat" id="mouse1" draggable="true">
+                    <img src="img/computer-mouse-pic.svg" width="30" alt="mouse treat" id="mouse2" draggable="true">
+                    <img src="img/computer-mouse-pic.svg" width="30" alt="mouse treat" id="mouse3" draggable="true">
+                </p>
+            </div>
+        </article>
+
+    </main>
+</body>
+
+</html>
