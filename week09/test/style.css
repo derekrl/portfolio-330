@@ -1,0 +1,41 @@
+#map {
+    position: relative;
+    width: 960px;
+    height: 487px;
+    clip-path: border-box;
+}
+
+#map svg {
+    /* position: absolute; */
+    max-width: 100%;
+    height: auto;
+    /* overflow: scroll; */
+}
+
+#map:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    cursor: zoom-in;
+    visibility: hidden;
+}
+
+#map.zooming:after {
+    visibility: visible;
+}
+
+#map.zooming svg {
+    pointer-events: none;
+}
+
+#map.zoomed {
+    overflow: scroll;
+}
+
+
+#map.zoomed svg {
+    max-width: unset;
+}
