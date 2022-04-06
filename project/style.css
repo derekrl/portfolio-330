@@ -1,12 +1,13 @@
 :root {
-    --blue-1: #8af;
-    --blue-2: #08f;
-    --orange-1: #fa8;
-    --orange-2: #f80;
+    --blue-1: #88aaff;
+    --blue-2: #0088ff;
+    --orange-1: #ffaa88;
+    --orange-2: #ff8800;
 }
 
 body {
     margin: 0 auto;
+    background: #eee;
     font-family: "Fira Sans", sans-serif;
 }
 
@@ -19,7 +20,7 @@ main {
 }
 
 main > section {
-  margin-bottom: 1em;
+    margin-bottom: 1em;
 }
 
 #input-container {
@@ -40,8 +41,19 @@ section.input {
     /* border-radius: 3px; */
 }
 
-select {
+section.input select {
     font-size: 1em;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.15),
+        inset 0 -1px rgba(0, 0, 0, 0.25);
+}
+
+section.input select:active {
+    background-color: #ddd;
+    box-shadow: inset 0 -1px rgba(255, 255, 255, 0.25),
+        inset 0 1px rgba(0, 0, 0, 0.25);
 }
 
 section.input textarea {
@@ -51,6 +63,11 @@ section.input textarea {
     font-size: 1.5em;
     height: 4em;
     margin-top: 0.5em;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    box-shadow: inset 0 -1px rgba(255, 255, 255, 0.15),
+        inset 0 1px rgba(0, 0, 0, 0.25);
 }
 
 #source-input {
@@ -73,28 +90,32 @@ section.input textarea {
 
 #action-buttons button {
     font-size: 1.25em;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 2px;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.15),
+        inset 0 -1px rgba(0, 0, 0, 0.25);
+}
+
+#action-buttons button:active {
+    background-color: #ddd;
+    box-shadow: inset 0 -1px rgba(255, 255, 255, 0.25),
+        inset 0 1px rgba(0, 0, 0, 0.25);
 }
 
 #map-interface {
-    /* margin: 0.5em; */
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template: 1fr 1fr / 1fr;
     width: 100%;
     gap: 0.5em;
     margin-bottom: 1em;
-    /* display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas: "source zoom" "target zoom"; */
 }
 
 #map-interface .cell {
     display: flex;
     flex-grow: 1;
-    /* width: 100%; */
     border-radius: 4px;
-    /* min-width: 75%; */
     padding: 0.5em;
-    /* justify-self: left; */
     align-items: center;
 }
 
@@ -103,28 +124,61 @@ section.input textarea {
 }
 
 #map-interface .cell button {
-    border: 1px solid rgba(0,0,0,0.5);
+    border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 2px;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.25),
+        inset 0 -1px rgba(0, 0, 0, 0.25);
     background: transparent;
-    /* align-self: flex-end; */
     margin: 0 auto;
     font-size: 1.25em;
 }
 
+#map-interface .cell button:hover:not([data-active="true"]) {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#map-interface .cell button:active:not([data-active="true"]) {
+    background-color: rgba(0,0,0,0.25);
+    box-shadow: inset 0 -1px rgba(255, 255, 255, 0.25),
+        inset 0 1px rgba(0, 0, 0, 0.25);
+}
+
 #map-interface .cell button[data-active="true"] {
-    background-color: white;
-    box-shadow: 0 0 0 1px rgba(0,0,0,0.5);
+    background-color: #fff;
+    border-color: black;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5),
+        inset 0 2px 1px rgba(0, 0, 0, 0.25);
     /* font-weight: bold; */
 }
 
+#map-interface .cell button[data-active="true"]::before {
+    content: ">>";
+}
+
 #source-cell {
-    /* grid-area: source; */
     background: var(--blue-1);
 }
 
 #target-cell {
-    /* grid-area: target; */
     background: var(--orange-1);
+}
+
+#map-parent {
+    position: relative;
+}
+
+#error-banner {
+    z-index: 1;
+    position: absolute;
+    top: -1em;
+    width: calc(100% - 2em);
+    margin: 0.5em;
+    padding: 0.5em;
+    border-radius: 4px;
+    pointer-events: none;
+    transition: opacity 1s;
+    background-color: #d66;
+    text-align: center;
 }
 
 #map {
@@ -133,9 +187,6 @@ section.input textarea {
     clip-path: border-box;
 }
 /*
-#map-parent {
-    position: relative;
-}
 
 #zoom-range {
     position: absolute;
@@ -191,15 +242,14 @@ section.input textarea {
     overflow: scroll;
 }
 
-
 #map.zoomed svg {
-    max-width: 2000px;
+    max-width: 1800px;
 }
 
 /*
 @media (max-width: 600px) {
     #map.zoomed svg {
-        max-width: 1500px;
+        max-width: 1600px;
     }
 }
 */
@@ -218,7 +268,7 @@ section.input textarea {
     }
 
     #map-interface {
-        flex-direction: row;
+        grid-template: 1fr / 1fr 1fr;
     }
 
     #map.zoomed svg {
@@ -237,14 +287,37 @@ section.input textarea {
         background-color: #222;
     }
 
-    #map-interface .cell button {
-        border-color: rgba(255,255,255,0.5);
+    section.input select,
+    section.input textarea,
+    #action-buttons button {
+        background-color: #444;
         color: white;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        border-radius: 2px;
+    }
+
+    #map-interface .cell button {
+        border-color: rgba(255, 255, 255, 0.5);
+        color: white;
+    }
+
+    section.input select:active,
+    #action-buttons button:active,
+    #map-interface .cell button:active:not([data-active="true"]) {
+        background-color: #222;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        box-shadow: inset 0 -1px rgba(255, 255, 255, 0.25),
+            inset 0 1px rgba(0, 0, 0, 0.25);
     }
 
     #map-interface .cell button[data-active="true"] {
         color: black;
         box-shadow: 0 0 0 1px black;
+    }
+
+    #error-banner {
+        background-color: #a33;
+        color: white;
     }
 
     #ocean {

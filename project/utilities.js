@@ -42,7 +42,7 @@ export function selectorListener(type, elementSelector, callback) {
  * The callback function to run
  */
 
-export function elementListener(type, element, callback) {
+export function elementListener(type, element, callback, callback2) {
 
     if (type === 'click') {
         if (/Mobile/i.test(window.navigator.userAgent)) {
@@ -60,12 +60,64 @@ export function elementListener(type, element, callback) {
         }
     }
 
-    if (type === 'dblclick') {
-        element.addEventListener('dblclick', callback);
-    }
-
     if (type === 'mousemove') {
         element.addEventListener('mousemove', callback);
     }
 
+}
+
+let doubleClickTest1 = false;
+let doubleClickTest2 = false;
+let timeout1 = null;
+let timeout2 = null;
+
+/**
+ * Run callback only if event is part of a double-click
+ * @param {event} event
+ * @param {callback} callback
+ */
+
+export function handleDoubleClick(event, callback) {
+    if (doubleClickTest1 === false) {
+        doubleClickTest1 = true;
+        setTimeout(() => {
+            doubleClickTest1 = false;
+        }, 500);
+        return false;
+    }
+    callback(event);
+}
+
+/**
+ * Run callback only if event is a single-click
+ * @param {event} event
+ * @param {callback} callback
+ */
+
+
+export function handleSingleClick(event, callback) {
+    if (doubleClickTest2 === true) {
+        doubleClickTest2 = false;
+        // console.log('clearing');
+        clearTimeout(timeout2);
+        return false;
+    }
+    if (doubleClickTest2 === false) {
+        doubleClickTest2 = true;
+        // console.log('setting');
+        timeout2 = setTimeout(() => {
+            // console.log('running');
+            doubleClickTest2 = false;
+            callback(event);
+        }, 500);
+        return false;
+    }
+}
+
+export function clearClickTestTimeouts() {
+    // console.log('clearing both');
+    clearTimeout(timeout1);
+    clearTimeout(timeout2);
+    doubleClickTest1 = false;
+    doubleClickTest2 = false;
 }

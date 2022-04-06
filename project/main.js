@@ -1,6 +1,6 @@
 import { setSelectedLang, swapInputs } from './ui.js';
 import { detectLanguage, getTranslation } from './libretranslate.js';
-import { qs, selectorListener, elementListener } from "./utilities.js";
+import { qs, selectorListener, elementListener, handleDoubleClick, handleSingleClick, clearClickTestTimeouts } from "./utilities.js";
 
 const sourceLangSelect = qs('#source-lang');
 // const sourceLangDetect = document.getElementById('source-detect');
@@ -14,6 +14,8 @@ const mapTextTarget = qs('#target-cell span');
 const mapButtonTarget = qs('#target-button');
 // const testButton = document.getElementById('test-button');
 const mapParentDiv = qs('#map-parent');
+const errorBanner = qs('#error-banner');
+const errorSpan = qs('#error-banner span');
 const mapElement = qs('#map');
 // const zoomer = qs('#zoom-range');
 
@@ -25,6 +27,7 @@ let currTarget = '';
 let styleCountryFills = document.createElement('style');
 let styleMapBox = document.createElement('style');
 
+let errorBannerTimeout = null;
 
 const langData = [
     ['en', 'English', ['us', 'gb', 'au', 'nz', 'ag', 'bs', 'bb', 'bz', 'bw', 'bn', 'ca', 'dm', 'fj', 'gm', 'gh', 'gd', 'gy', 'jm', 'ke', 'lr', 'mu', 'fm', 'ng', 'kn', 'lc', 'vc', 'sl', 'sg', 'sb', 'za', 'ss', 'tt']],
@@ -57,14 +60,15 @@ initPage();
 
 function initPage() {
 
-    sourceLangSelect.addEventListener('change', () => markCountries(sourceLangSelect.value, 'lang', 'source'));
     // utils.onTouchElement(sourceLangSelect, () => markCountries(sourceLangSelect.value, 'lang', 'source'));
     // sourceLangDetect.addEventListener('click', () => {
     //     detectLanguage(sourceTextInput.value)
     //         .then(response => console.log(response), response => console.log(`Error: ${response}`))
     // });
-    targetLangSelect.addEventListener('change',
-        () => markCountries(targetLangSelect.value, 'lang', 'target'));
+    sourceLangSelect.addEventListener('change', () => {
+        markCountries(sourceLangSelect.value, 'lang', 'source')
+    });
+    targetLangSelect.addEventListener('change', () => markCountries(targetLangSelect.value, 'lang', 'target'));
 
     // document.getElementById('action-swap').addEventListener('click', () => {
     //     swapInputs();
@@ -74,8 +78,8 @@ function initPage() {
 
     selectorListener('click', '#action-swap', () => {
         swapInputs();
-        markCountries(sourceLangSelect.value, 'lang', 'source');
-        markCountries(targetLangSelect.value, 'lang', 'target');
+        markCountries(sourceLangSelect.value, 'lang', 'source', true);
+        markCountries(targetLangSelect.value, 'lang', 'target', true);
     });
 
     // document.getElementById('action-translate').addEventListener('click', () => {
@@ -111,9 +115,9 @@ function initPage() {
 
     document.head.appendChild(styleCountryFills);
     styleCountryFills.sheet.insertRule('.stub {background: transparent}', 0);
+    styleCountryFills.sheet.insertRule('.stub2 {background: transparent}', 1);
     mapTextSource.innerHTML = 'Stub';
     mapTextSource.dataset.code = 'null';
-    styleCountryFills.sheet.insertRule('.stub2 {background: transparent}', 1);
     mapTextTarget.innerHTML = 'Stub';
     mapTextTarget.dataset.code = 'null';
     markCountries('en', 'lang', 'source');
@@ -147,9 +151,16 @@ function initPage() {
                 .querySelector('svg');
         })
         .then((map) => {
+
             elementListener('click', map, event => countryClicked(event))
+            // elementListener('click', map, event => handleSingleClick(event, event => countryClicked(event)))
             // utils.elementListener('contextmenu', map, event => (countryClicked(event)))
-            elementListener('dblclick', map, event => doubleClickZoom(event))
+            // map.addEventListener('click', function (event) {
+            //     handleDoubleClick(event, function (event) {
+            //         doubleClickZoom(event)
+            //     })
+            // })
+            elementListener('click', map, event => handleDoubleClick(event, event => doubleClickZoom(event)))
             elementListener('mousemove', map, event => panMap(event))
             // map.addEventListener('click', (event) => countryClicked(event));
             // map.addEventListener('contextmenu', (event) => countryClicked(event));
@@ -242,7 +253,7 @@ function countryClicked(event) {
     // markCountries(code, 'country', event.buttons === 0 ? 'source' : 'target');
 }
 
-function markCountries(code, codeType, which) {
+function markCountries(code, codeType, which, force=false) {
 
     let data = [];
 
@@ -254,27 +265,25 @@ function markCountries(code, codeType, which) {
 
     // console.log(data);
     if (!data) {
-        console.log(`Language not supported or country has multiple official languages`);
+        // document.body.style.cursor = 'not-allowed';
+        showErrorBanner('Language not supported or country has multiple official languages');
+        console.log('Language not supported or country has multiple official languages');
         return false;
     }
+
+    clearTimeout(errorBannerTimeout);
+    errorBanner.style.opacity = 0;
 
     // console.log(data);
 
     if (which === 'source') {
-        if (data[0] === currTarget) return false
+        if (data[0] === currTarget && force === false) return false;
         currSource = data[0];
     };
     if (which === 'target') {
-        if (data[0] === currSource) return false;
+        if (data[0] === currSource && force === false) return false;
         currTarget = data[0];
-    }
-
-    /* false negatives
-    if (data[0] === mapTextSource.dataset.code || data[0] === mapTextTarget.dataset.code) {
-        console.log('Already marked');
-        return false;
-    }
-    */
+    };
 
     let string = '';
 
@@ -312,6 +321,15 @@ function markCountries(code, codeType, which) {
     // console.log(style.sheet.cssRules);
 }
 
+function showErrorBanner(message) {
+    errorBanner.style.opacity = 1;
+    errorSpan.innerHTML = message;
+    clearTimeout(errorBannerTimeout);
+    errorBannerTimeout = setTimeout(() => {
+        errorBanner.style.opacity = 0;
+    }, 3000);
+}
+
 function toggleZoom() {
     if (mapElement.classList.contains('zoomed')) {
         zoomOut();
@@ -339,13 +357,26 @@ function zoomOut() {
 }
 
 function zoomIn(event) {
+    let x = 0;
+    let y = 0;
+
+    if (event.type === 'mouseup') {
+        x = event.layerX;
+        y = event.layerY;
+    }
+    if (event.type === 'touchend') {
+        let touch = event.changedTouches[0];
+        x = touch.clientX - mapParentDiv.offsetLeft;
+        y = touch.clientY - mapParentDiv.offsetTop;
+        // console.log(touch.clientY, mapParentDiv.offsetTop, y, event, touch);
+    }
     // console.log(event);
     // mapTextSource.innerHTML = `Language: ${currentLanguageSource}`;
     // zoomButton.innerText = 'Zoom out';
     // zommer.value = 100;
     mapElement.classList.remove('zooming');
-    let perX = event.layerX / mapElement.scrollWidth;
-    let perY = event.layerY / mapElement.scrollHeight;
+    let perX = x / mapElement.scrollWidth;
+    let perY = y / mapElement.scrollHeight;
     mapElement.classList.add('zoomed');
     mapElement.scrollTo(
         perX * (mapElement.scrollWidth - mapElement.clientWidth),
@@ -390,7 +421,8 @@ function setZoom(x, y) {
 */
 
 function panMap(event) {
-    // console.log(event);
+    // if (document.body.style.cursor = 'not-allowed') document.body.style.cursor = 'auto';
+    clearClickTestTimeouts();
     if (event.buttons === 0) return false;
 
     mapElement.scrollTo(
