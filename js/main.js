@@ -38,6 +38,10 @@ const links = [
     {
         label: 'Week 10 - Validating Forms | Using Fetch',
         url: 'week10/'
+    },
+    {
+        label: 'Final Project - Translator with API',
+        url: 'project/'
     }
 ]
 
