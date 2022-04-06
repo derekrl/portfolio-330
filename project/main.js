@@ -1,21 +1,30 @@
 import { setSelectedLang, swapInputs } from './ui.js';
 import { detectLanguage, getTranslation } from './libretranslate.js';
+import { qs, selectorListener, elementListener } from "./utilities.js";
 
-const sourceLangSelect = document.getElementById('source-lang');
+const sourceLangSelect = qs('#source-lang');
 // const sourceLangDetect = document.getElementById('source-detect');
-const sourceTextInput = document.getElementById('source-text');
-const targetLangSelect = document.getElementById('target-lang');
-const targetTextInput = document.getElementById('target-text');
+const sourceTextInput = qs('#source-text');
+const targetLangSelect = qs('#target-lang');
+const targetTextInput = qs('#target-text');
 
-const mapTextSource = document.querySelector('#map-interface span:nth-of-type(1)');
-const mapTextTarget = document.querySelector('#map-interface span:nth-of-type(2)');
-const zoomButton = document.getElementById('zoom');
+const mapTextSource = qs('#source-cell span');
+const mapButtonSource = qs('#source-button');
+const mapTextTarget = qs('#target-cell span');
+const mapButtonTarget = qs('#target-button');
 // const testButton = document.getElementById('test-button');
-const mapDiv = document.getElementById('map');
+const mapParentDiv = qs('#map-parent');
+const mapElement = qs('#map');
+// const zoomer = qs('#zoom-range');
 
 const worldmapSVGPath = 'world-map.svg';
 
-let style = document.createElement('style');
+let currSource = '';
+let currTarget = '';
+
+let styleCountryFills = document.createElement('style');
+let styleMapBox = document.createElement('style');
+
 
 const langData = [
     ['en', 'English', ['us', 'gb', 'au', 'nz', 'ag', 'bs', 'bb', 'bz', 'bw', 'bn', 'ca', 'dm', 'fj', 'gm', 'gh', 'gd', 'gy', 'jm', 'ke', 'lr', 'mu', 'fm', 'ng', 'kn', 'lc', 'vc', 'sl', 'sg', 'sb', 'za', 'ss', 'tt']],
@@ -48,44 +57,78 @@ initPage();
 
 function initPage() {
 
-    zoomButton.addEventListener('click', () => toggleZoom());
-
-    sourceLangSelect.addEventListener('change', () =>
-        markCountries(sourceLangSelect.value, 'lang', 'source'));
+    sourceLangSelect.addEventListener('change', () => markCountries(sourceLangSelect.value, 'lang', 'source'));
+    // utils.onTouchElement(sourceLangSelect, () => markCountries(sourceLangSelect.value, 'lang', 'source'));
     // sourceLangDetect.addEventListener('click', () => {
     //     detectLanguage(sourceTextInput.value)
     //         .then(response => console.log(response), response => console.log(`Error: ${response}`))
     // });
-    targetLangSelect.addEventListener('change', () =>
-        markCountries(targetLangSelect.value, 'lang', 'target'));
-    document.getElementById('action-swap').addEventListener('click', () => {
+    targetLangSelect.addEventListener('change',
+        () => markCountries(targetLangSelect.value, 'lang', 'target'));
+
+    // document.getElementById('action-swap').addEventListener('click', () => {
+    //     swapInputs();
+    //     markCountries(sourceLangSelect.value, 'lang', 'source');
+    //     markCountries(targetLangSelect.value, 'lang', 'target');
+    // });
+
+    selectorListener('click', '#action-swap', () => {
         swapInputs();
         markCountries(sourceLangSelect.value, 'lang', 'source');
         markCountries(targetLangSelect.value, 'lang', 'target');
     });
-    document.getElementById('action-translate').addEventListener('click', () => {
+
+    // document.getElementById('action-translate').addEventListener('click', () => {
+    //     document.body.style.cursor = 'progress';
+    //     getTranslation(sourceTextInput.value, sourceLangSelect.value, targetLangSelect.value)
+    //         .then(
+    //             response => {
+    //                 document.body.style.cursor = 'auto';
+    //                 targetTextInput.value = response.translatedText},
+    //             response => {
+    //                 document.body.style.cursor = 'auto';
+    //                 console.log(`Error: ${response}`)}
+    //             )
+    // });
+
+    selectorListener('click', '#action-translate', () => {
         document.body.style.cursor = 'progress';
         getTranslation(sourceTextInput.value, sourceLangSelect.value, targetLangSelect.value)
             .then(
                 response => {
                     document.body.style.cursor = 'auto';
-                    targetTextInput.value = response.translatedText},
+                    targetTextInput.value = response.translatedText
+                },
                 response => {
                     document.body.style.cursor = 'auto';
-                    console.log(`Error: ${response}`)}
-                )
-    });
+                    console.log(`Error: ${response}`)
+                }
+            )
+    })
 
+    elementListener('click', mapButtonSource, event => activateSelectionButton(event));
+    elementListener('click', mapButtonTarget, event => activateSelectionButton(event));
 
-    document.head.appendChild(style);
-    style.sheet.insertRule('.stub {background: transparent}', 0);
+    document.head.appendChild(styleCountryFills);
+    styleCountryFills.sheet.insertRule('.stub {background: transparent}', 0);
     mapTextSource.innerHTML = 'Stub';
     mapTextSource.dataset.code = 'null';
-    style.sheet.insertRule('.stub2 {background: transparent;}', 1);
+    styleCountryFills.sheet.insertRule('.stub2 {background: transparent}', 1);
     mapTextTarget.innerHTML = 'Stub';
     mapTextTarget.dataset.code = 'null';
     markCountries('en', 'lang', 'source');
     markCountries('es', 'lang', 'target');
+
+    // console.log(styleCountryFills.sheet);
+
+    // console.log(mapDiv.clientWidth);
+
+    // console.log(styleMapBox);
+
+    document.head.appendChild(styleMapBox);
+
+    sizeMapDiv(true);
+    window.addEventListener('resize', () => sizeMapDiv());
 
     let parser = new DOMParser();
 
@@ -104,13 +147,29 @@ function initPage() {
                 .querySelector('svg');
         })
         .then((map) => {
-            map.addEventListener('click', (event) =>
-                countryClicked(event));
-            map.addEventListener('contextmenu', (event) =>
-                countryClicked(event)
-            );
-            map.addEventListener('dblclick', (event) => doubleClickZoom(event));
-            mapDiv.appendChild(map);
+            elementListener('click', map, event => countryClicked(event))
+            // utils.elementListener('contextmenu', map, event => (countryClicked(event)))
+            elementListener('dblclick', map, event => doubleClickZoom(event))
+            elementListener('mousemove', map, event => panMap(event))
+            // map.addEventListener('click', (event) => countryClicked(event));
+            // map.addEventListener('contextmenu', (event) => countryClicked(event));
+            // map.addEventListener('dblclick', (event) => doubleClickZoom(event));
+
+            mapElement.appendChild(map);
+            mapElement.dataset.fresh = 'true';
+
+            if (/Mobile/i.test(window.navigator.userAgent)) {
+                mapElement.addEventListener('touchstart', () => removeInternalOverlay(), { once: true });
+            } else {
+                mapElement.addEventListener('mouseover', () => removeInternalOverlay(), { once: true });
+            }
+
+            function removeInternalOverlay() {
+                mapElement.dataset.fresh = 'false';
+                qs('#map-overlay').remove();
+
+            }
+
         })
         .catch((error) => console.log('There was an error:', error));
 }
@@ -131,6 +190,22 @@ function findDataFromLang(lang) {
     }
 }
 
+function activateSelectionButton(event) {
+    let target = event.target;
+
+    if (target.id === 'source-button') {
+        mapButtonSource.dataset.active = 'true';
+        if (mapButtonTarget.dataset.active === 'true') {
+            mapButtonTarget.dataset.active = 'false';
+        }
+    } else {
+        mapButtonTarget.dataset.active = 'true';
+        if (mapButtonSource.dataset.active === 'true') {
+            mapButtonSource.dataset.active = 'false';
+        }
+    }
+}
+
 function countryClicked(event) {
     // console.log(event);
     event.preventDefault();
@@ -147,13 +222,24 @@ function countryClicked(event) {
     }
 
     let code = target.id;
-    let name = target.getElementsByTagName('title')[0].innerHTML;
-    console.log(code, name);
+    // let name = target.getElementsByTagName('title')[0].innerHTML;
+    // console.log(code, name);
     // console.log(`Country: ${code} Name: ${name}`, target);
     // console.log(event);
     // console.log(`Button ${event.buttons}, X ${event.layerX}, Y ${event.layerY}`);
 
-    markCountries(code, 'country', event.buttons === 0 ? 'source' : 'target');
+    let which = '';
+
+    if (mapButtonSource.dataset.active === 'true') {
+        which = 'source';
+    }
+
+    if (mapButtonTarget.dataset.active === 'true') {
+        which = 'target';
+    }
+
+    markCountries(code, 'country', which);
+    // markCountries(code, 'country', event.buttons === 0 ? 'source' : 'target');
 }
 
 function markCountries(code, codeType, which) {
@@ -170,6 +256,17 @@ function markCountries(code, codeType, which) {
     if (!data) {
         console.log(`Language not supported or country has multiple official languages`);
         return false;
+    }
+
+    // console.log(data);
+
+    if (which === 'source') {
+        if (data[0] === currTarget) return false
+        currSource = data[0];
+    };
+    if (which === 'target') {
+        if (data[0] === currSource) return false;
+        currTarget = data[0];
     }
 
     /* false negatives
@@ -190,21 +287,24 @@ function markCountries(code, codeType, which) {
         };
     }
     */
-    data[2].forEach(a => {string += `, .${a}`})
-    string = string.slice(2);
+
+    // build css selector
+    data[2].forEach(a => { string += `, .${a}` })
+
     // fix ', .us, .gb, .au, .nz'
+    string = string.slice(2);
 
     // console.log(string);
 
     if (which === 'source') {
-        style.sheet.deleteRule(0);
-        style.sheet.insertRule(`${string} {fill: #48f !important}`, 0);
+        styleCountryFills.sheet.deleteRule(0);
+        styleCountryFills.sheet.insertRule(`${string} {fill: var(--blue-2) !important}`, 0);
         mapTextSource.innerHTML = `Source language: ${data[1]}`;
         mapTextSource.dataset.code = data[0];
         setSelectedLang(data[0], 'source');
     } else {
-        style.sheet.deleteRule(1);
-        style.sheet.insertRule(`${string} {fill: #f84 !important}`, 1);
+        styleCountryFills.sheet.deleteRule(1);
+        styleCountryFills.sheet.insertRule(`${string} {fill: var(--orange-2) !important}`, 1);
         mapTextTarget.innerHTML = `Target language: ${data[1]}`;
         mapTextTarget.dataset.code = data[0];
         setSelectedLang(data[0], 'target');
@@ -213,19 +313,19 @@ function markCountries(code, codeType, which) {
 }
 
 function toggleZoom() {
-    if (mapDiv.classList.contains('zoomed')) {
+    if (mapElement.classList.contains('zoomed')) {
         zoomOut();
     } else {
-        mapDiv.classList.add('zooming');
-        zoomButton.innerText = 'Zoom where?';
-        mapDiv.addEventListener('click', (event) => zoomIn(event), {
+        mapElement.classList.add('zooming');
+        // zoomButton.innerText = 'Zoom where?';
+        mapElement.addEventListener('click', (event) => zoomIn(event), {
             once: true,
         });
     }
 }
 
 function doubleClickZoom(event) {
-    if (mapDiv.classList.contains('zoomed')) {
+    if (mapElement.classList.contains('zoomed')) {
         zoomOut();
     } else {
         zoomIn(event);
@@ -233,21 +333,77 @@ function doubleClickZoom(event) {
 }
 
 function zoomOut() {
-    mapDiv.classList.remove('zoomed');
-    zoomButton.innerText = 'Zoom in';
+    mapElement.classList.remove('zoomed');
+    // zoomButton.innerText = 'Zoom in';
+    // zoomer.value = 0;
 }
 
 function zoomIn(event) {
     // console.log(event);
     // mapTextSource.innerHTML = `Language: ${currentLanguageSource}`;
-    zoomButton.innerText = 'Zoom out';
-    mapDiv.classList.remove('zooming');
-    let perX = event.layerX / mapDiv.scrollWidth;
-    let perY = event.layerY / mapDiv.scrollHeight;
-    mapDiv.classList.add('zoomed');
-    mapDiv.scrollTo(
-        perX * (mapDiv.scrollWidth - mapDiv.clientWidth),
-        perY * (mapDiv.scrollHeight - mapDiv.clientHeight)
+    // zoomButton.innerText = 'Zoom out';
+    // zommer.value = 100;
+    mapElement.classList.remove('zooming');
+    let perX = event.layerX / mapElement.scrollWidth;
+    let perY = event.layerY / mapElement.scrollHeight;
+    mapElement.classList.add('zoomed');
+    mapElement.scrollTo(
+        perX * (mapElement.scrollWidth - mapElement.clientWidth),
+        perY * (mapElement.scrollHeight - mapElement.clientHeight)
     );
     // console.log(perX, perY, perX * mapDiv.scrollWidth, perY * mapDiv.scrollHeight)
+}
+
+/*
+function setZoom(x, y) {
+    let oldValue = curZoom;
+    let newValue = zoomer.value;
+    let oldWidth = mapDiv.scrollWidth;
+    let oldHeight = mapDiv.scrollHeight;
+    let oldOffsetLeft = mapDiv.scrollLeft;
+    let oldOffsetTop = mapDiv.scrollTop;
+    let fullWidth = 2754;
+    let fullHeight = 1398;
+    let boxWidth = mapParent.clientWidth;
+    let boxHeight = mapParent.clientHeight;
+
+    // console.log(mapParent.clientWidth, mapDiv.clientWidth);
+
+    if (x === null) {
+        x = boxWidth / 2;
+        y = boxHeight / 2;
+    }
+
+    console.log(boxWidth + ((fullWidth - boxWidth) * newValue / 100));
+    styleMapZoom.sheet.deleteRule(0);
+    styleMapZoom.sheet.insertRule(`#map svg {width: ${
+        boxWidth + ((fullWidth - boxWidth) * newValue / 100)
+    }px;}`);
+    console.log(oldOffsetLeft, oldValue, x, newValue);
+    mapDiv.scrollTo(
+        oldOffsetLeft / (oldValue / 100) * (newValue / 100) + x,
+        oldOffsetTop / (oldValue / 100) * (newValue / 100) + y
+    );
+
+    curZoom = newValue;
+}
+*/
+
+function panMap(event) {
+    // console.log(event);
+    if (event.buttons === 0) return false;
+
+    mapElement.scrollTo(
+        mapElement.scrollLeft - event.movementX,
+        mapElement.scrollTop - event.movementY
+    )
+}
+
+function sizeMapDiv(first) {
+    if (first !== true) {
+        styleMapBox.sheet.deleteRule(0);
+        styleMapBox.sheet.deleteRule(0);
+    }
+    styleMapBox.sheet.insertRule(`#map{width: ${mapParentDiv.clientWidth}px}`, 0);
+    styleMapBox.sheet.insertRule(`#map{height: ${1398 / (2754 / mapParentDiv.clientWidth)}px}`, 1)
 }
