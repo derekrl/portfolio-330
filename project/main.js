@@ -65,9 +65,7 @@ function initPage() {
     //     detectLanguage(sourceTextInput.value)
     //         .then(response => console.log(response), response => console.log(`Error: ${response}`))
     // });
-    sourceLangSelect.addEventListener('change', () => {
-        markCountries(sourceLangSelect.value, 'lang', 'source')
-    });
+    sourceLangSelect.addEventListener('change', () => markCountries(sourceLangSelect.value, 'lang', 'source'));
     targetLangSelect.addEventListener('change', () => markCountries(targetLangSelect.value, 'lang', 'target'));
 
     // document.getElementById('action-swap').addEventListener('click', () => {
@@ -97,6 +95,7 @@ function initPage() {
 
     selectorListener('click', '#action-translate', () => {
         document.body.style.cursor = 'progress';
+        targetTextInput.value = 'Loading...'
         getTranslation(sourceTextInput.value, sourceLangSelect.value, targetLangSelect.value)
             .then(
                 response => {
@@ -289,7 +288,7 @@ function countryClicked(event) {
  * @returns {boolean} false if early exit
  */
 
-function markCountries(code, codeType, which, force=false) {
+function markCountries(code, codeType, which, force = false) {
 
     let data = [];
 
@@ -496,9 +495,8 @@ function setZoom(x, y) {
  * @returns {boolean} false if exited early
  */
 
+// mousemove event
 function panMap(event) {
-    // if (document.body.style.cursor = 'not-allowed') document.body.style.cursor = 'auto';
-    clearClickTestTimeouts();
     if (event.buttons === 0) return false;
 
     mapElement.scrollTo(
@@ -513,7 +511,7 @@ function panMap(event) {
  * @param {boolean=} first don't try to delete non-existent rules on first run
  */
 
-function sizeMapDiv(first=false) {
+function sizeMapDiv(first = false) {
     if (first !== true) {
         styleMapBox.sheet.deleteRule(0);
         styleMapBox.sheet.deleteRule(0);
