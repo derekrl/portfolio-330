@@ -499,6 +499,9 @@ function setZoom(x, y) {
 function panMap(event) {
     if (event.buttons === 0) return false;
 
+    clearTimeout(errorBannerTimeout);
+    errorBanner.style.opacity = 0;
+
     mapElement.scrollTo(
         mapElement.scrollLeft - event.movementX,
         mapElement.scrollTop - event.movementY
