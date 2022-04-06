@@ -185,6 +185,12 @@ function initPage() {
         .catch((error) => console.log('There was an error:', error));
 }
 
+/**
+ * Find langData entry containing specified country code
+ * @param {string} country country code
+ * @returns array item
+ */
+
 function findDataFromCountry(country) {
     return langData.filter(filter);
 
@@ -193,6 +199,12 @@ function findDataFromCountry(country) {
     }
 }
 
+/**
+ * Find langData entry containing specified language
+ * @param {string} lang language code
+ * @returns array item
+ */
+
 function findDataFromLang(lang) {
     return langData.filter(filter);
 
@@ -200,6 +212,12 @@ function findDataFromLang(lang) {
         return element[0] === lang;
     }
 }
+
+/**
+ * Activates either of the select buttons. This determines whether
+ * source or target are updated when the map is clicked
+ * @param {event} event
+ */
 
 function activateSelectionButton(event) {
     let target = event.target;
@@ -217,9 +235,15 @@ function activateSelectionButton(event) {
     }
 }
 
+/**
+ * Finds country id of event target and passes it to markCountries()
+ * @param {event} event
+ * @returns {boolean} false if early exit
+ */
+
 function countryClicked(event) {
     // console.log(event);
-    event.preventDefault();
+    // event.preventDefault();
 
     let target = event.target;
 
@@ -250,8 +274,20 @@ function countryClicked(event) {
     }
 
     markCountries(code, 'country', which);
-    // markCountries(code, 'country', event.buttons === 0 ? 'source' : 'target');
+    // markCountries(code, 'country', event.button === 1 ? 'source' : 'target');
 }
+
+/**
+ * Finds all countries sharing specified language (or language of specified country),
+ * colors them on map according to which (source/target).
+ *
+ * Has safety checks to ensure the same language isn't marked as both source and target
+ * @param {string} code country code (us) or lang code (en)
+ * @param {string} codeType country or lang
+ * @param {string} which source or target
+ * @param {boolean=} force skip safety checks
+ * @returns {boolean} false if early exit
+ */
 
 function markCountries(code, codeType, which, force=false) {
 
@@ -321,6 +357,12 @@ function markCountries(code, codeType, which, force=false) {
     // console.log(style.sheet.cssRules);
 }
 
+/**
+ * Display error message banner on map.
+ * Only used when a country isn't linked with a language in langData
+ * @param {string} message
+ */
+
 function showErrorBanner(message) {
     errorBanner.style.opacity = 1;
     errorSpan.innerHTML = message;
@@ -330,6 +372,12 @@ function showErrorBanner(message) {
     }, 3000);
 }
 
+/**
+ * Depreciated, button-based zoom functionality.
+ * .zooming activates css pseudo-element
+ */
+
+/*
 function toggleZoom() {
     if (mapElement.classList.contains('zoomed')) {
         zoomOut();
@@ -341,6 +389,12 @@ function toggleZoom() {
         });
     }
 }
+*/
+
+/**
+ * Simple logic wrapper for double-click zooming
+ * @param {event} event
+ */
 
 function doubleClickZoom(event) {
     if (mapElement.classList.contains('zoomed')) {
@@ -350,11 +404,20 @@ function doubleClickZoom(event) {
     }
 }
 
+/**
+ * Removes .zoomed. Just what it says on the tin
+ */
+
 function zoomOut() {
     mapElement.classList.remove('zoomed');
     // zoomButton.innerText = 'Zoom in';
     // zoomer.value = 0;
 }
+
+/**
+ * Determines coordinates from event, adds .zoomed and scrolls to specified area
+ * @param {event} event
+ */
 
 function zoomIn(event) {
     let x = 0;
@@ -384,6 +447,13 @@ function zoomIn(event) {
     );
     // console.log(perX, perY, perX * mapDiv.scrollWidth, perY * mapDiv.scrollHeight)
 }
+
+/**
+ * Zooms in and out in response to a range slider being updated.
+ * Only complicates things, double-click zoom works fine
+ * @param {number} x
+ * @param {number} y
+ */
 
 /*
 function setZoom(x, y) {
@@ -420,6 +490,12 @@ function setZoom(x, y) {
 }
 */
 
+/**
+ * If mouse is moved while a button is held, make the map follow
+ * @param {event} event
+ * @returns {boolean} false if exited early
+ */
+
 function panMap(event) {
     // if (document.body.style.cursor = 'not-allowed') document.body.style.cursor = 'auto';
     clearClickTestTimeouts();
@@ -431,7 +507,13 @@ function panMap(event) {
     )
 }
 
-function sizeMapDiv(first) {
+/**
+ * Ensure map element is correct size for page.
+ * Runs on page resize and rotate
+ * @param {boolean=} first don't try to delete non-existent rules on first run
+ */
+
+function sizeMapDiv(first=false) {
     if (first !== true) {
         styleMapBox.sheet.deleteRule(0);
         styleMapBox.sheet.deleteRule(0);

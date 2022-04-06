@@ -80,7 +80,7 @@ let timeout2 = null;
 export function handleDoubleClick(event, callback) {
     if (doubleClickTest1 === false) {
         doubleClickTest1 = true;
-        setTimeout(() => {
+        timeout1 = setTimeout(() => {
             doubleClickTest1 = false;
         }, 500);
         return false;
@@ -113,6 +113,10 @@ export function handleSingleClick(event, callback) {
         return false;
     }
 }
+
+/**
+ * Clear timeouts used to determine single- vs double-click behaviors
+ */
 
 export function clearClickTestTimeouts() {
     // console.log('clearing both');
